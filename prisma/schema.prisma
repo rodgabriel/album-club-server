@@ -12,6 +12,6 @@ generator client {
 
 model User {
   id Int @id @default(autoincrement())
-  name String
+  name String 
   username String @unique
 }

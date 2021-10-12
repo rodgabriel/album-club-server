@@ -3,6 +3,13 @@ import { ApolloServer } from "apollo-server";
 import typeDefs from "./graphql/types";
 import resolvers from "./graphql/resolvers";
 
-const server = new ApolloServer({ typeDefs, resolvers });
+import { context } from "./context";
 
-server.listen().then(({ url }) => console.log(`Server ready at ${url}`));
+const server = new ApolloServer({ typeDefs, resolvers, context });
+
+server
+  .listen()
+  .then(({ url }) => {
+    console.log(`Server ready at ${url}`);
+  })
+  .catch((reason) => console.log(reason));
