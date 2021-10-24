@@ -1,5 +1,8 @@
 import { PrismaContext } from "src/context";
 
+// mutations
+import { createUser } from "./mutations";
+
 const resolvers = {
   Query: {
     user: (_parent: any, args: { id: number }, context: PrismaContext) => {
@@ -43,6 +46,10 @@ const resolvers = {
       });
       return clubs;
     },
+  },
+
+  Mutation: {
+    createUser,
   },
 };
 

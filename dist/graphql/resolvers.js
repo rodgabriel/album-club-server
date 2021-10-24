@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const mutations_1 = require("./mutations");
 const resolvers = {
     Query: {
         user: (_parent, args, context) => {
@@ -38,6 +39,9 @@ const resolvers = {
             });
             return clubs;
         },
+    },
+    Mutation: {
+        createUser: mutations_1.createUser,
     },
 };
 exports.default = resolvers;

@@ -23,11 +23,25 @@ const typeDefs = (0, apollo_server_1.gql) `
     user: User
   }
 
+  type Error {
+    error: String
+  }
+
+  union CreateUserResult = User | Error
+
   type Query {
     user(id: ID!): User
     users: [User]
     club(id: ID!): Club
     clubs: [Club]
+  }
+
+  type Mutation {
+    createUser(
+      name: String
+      username: String
+      password: String
+    ): CreateUserResult
   }
 `;
 exports.default = typeDefs;
