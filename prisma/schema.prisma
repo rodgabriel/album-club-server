@@ -13,12 +13,16 @@ model User {
   username String       @unique
   password String
   clubs    ClubToUser[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt 
 }
 
 model Club {
   id      Int          @id @default(autoincrement())
   name    String       @unique
   members ClubToUser[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt 
 }
 
 model ClubToUser {
@@ -26,6 +30,7 @@ model ClubToUser {
   clubId Int
   club   Club @relation(fields: [clubId], references: [id])
   user   User @relation(fields: [userId], references: [id])
+  createdAt DateTime    @default(now())
 
   @@id([userId, clubId])
 }
