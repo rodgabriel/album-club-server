@@ -1,7 +1,7 @@
 import { PrismaContext } from "src/context";
 
 // mutations
-import { createUser } from "./mutations";
+import { user_mutations } from "./mutations";
 
 const resolvers = {
   Query: {
@@ -49,7 +49,7 @@ const resolvers = {
   },
 
   Mutation: {
-    createUser,
+    ...user_mutations,
   },
 };
 
