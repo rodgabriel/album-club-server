@@ -1,12 +1,23 @@
 import { PrismaContext } from "src/context";
+import { ensureAuthenticated } from "../middleware/authentication";
 
 // mutations
 import { user_mutations } from "./mutations";
 
 const resolvers = {
   Query: {
-    user: (_parent: any, args: { id: number }, context: PrismaContext) => {
-      const user = context.prisma.user.findUnique({
+    user: async (
+      _parent: any,
+      args: { id: number },
+      context: PrismaContext
+    ) => {
+      const isAuthenticated = ensureAuthenticated("blahblahblah");
+
+      if (!isAuthenticated.isAuth) {
+        return { __typename: "Error", error: isAuthenticated.error };
+      }
+
+      const user = await context.user.findUnique({
         where: { id: Number(args.id) },
         include: {
           clubs: {
@@ -17,18 +28,27 @@ const resolvers = {
         },
       });
 
-      return user;
+      if (!user) {
+        return { __typename: "Error", error: "No user found." };
+      }
+
+      return {
+        __typename: "User",
+        id: user.id,
+        name: user.name,
+        username: user.username,
+      };
     },
 
     users: (_parent: any, _args: any, context: PrismaContext) => {
-      const users = context.prisma.user.findMany({
+      const users = context.user.findMany({
         include: { clubs: { include: { club: true } } },
       });
       return users;
     },
 
     club: (_parent: any, args: { id: number }, context: PrismaContext) => {
-      const club = context.prisma.club.findUnique({
+      const club = context.club.findUnique({
         where: { id: Number(args.id) },
         include: {
           members: { include: { user: true } },
@@ -39,7 +59,7 @@ const resolvers = {
     },
 
     clubs: (_parent: any, _args: any, context: PrismaContext) => {
-      const clubs = context.prisma.club.findMany({
+      const clubs = context.club.findMany({
         include: {
           members: { include: { user: true } },
         },

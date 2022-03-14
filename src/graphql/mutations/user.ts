@@ -6,7 +6,7 @@ export const createUser = async (
   args: { name: string; username: string; password: string },
   context: PrismaContext
 ) => {
-  const checkUsername = await context.prisma.user.findFirst({
+  const checkUsername = await context.user.findFirst({
     where: { username: args.username },
   });
 
@@ -16,7 +16,7 @@ export const createUser = async (
 
   const hash = await bcrypt.hash(args.password, 10);
 
-  const newUser = await context.prisma.user.create({
+  const newUser = await context.user.create({
     data: { name: args.name, username: args.username, password: hash },
   });
 

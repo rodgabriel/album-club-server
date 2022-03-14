@@ -26,10 +26,11 @@ const typeDefs = gql`
     error: String
   }
 
+  union UserOrError = User | Error
   union CreateUserResult = User | Error
 
   type Query {
-    user(id: ID!): User
+    user(id: ID!): UserOrError
     users: [User]
     club(id: ID!): Club
     clubs: [Club]
