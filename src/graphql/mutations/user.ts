@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
-import { PrismaContext } from "src/context";
+import { generateToken } from "../../middleware/authentication";
+import { JWT_SECRET } from "../../config/auth";
+import { PrismaContext } from "../../context";
 
 export const createUser = async (
   _parent: any,
@@ -26,4 +28,32 @@ export const createUser = async (
     name: newUser.name,
     username: newUser.username,
   };
+};
+
+export const login = async (
+  _parent: any,
+  args: { username: string; password: string },
+  context: PrismaContext
+) => {
+  const { username, password } = args;
+
+  const user = await context.user.findFirst({ where: { username } });
+
+  if (!user) {
+    return { __typename: "Error", error: "No user found." };
+  }
+
+  const isValid = await bcrypt.compare(password, user.password);
+
+  if (!isValid) {
+    return { __typename: "Error", error: "Invalid information." };
+  }
+
+  const token = generateToken(
+    { id: String(user.id), username: user.username },
+    "1d",
+    JWT_SECRET
+  );
+
+  return { __typename: "Login", user, token };
 };

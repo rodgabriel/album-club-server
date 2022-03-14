@@ -26,7 +26,13 @@ const typeDefs = gql`
     error: String
   }
 
+  type Login {
+    user: User
+    token: String
+  }
+
   union UserOrError = User | Error
+  union LoginOrError = Login | Error
   union CreateUserResult = User | Error
 
   type Query {
@@ -42,6 +48,7 @@ const typeDefs = gql`
       username: String
       password: String
     ): CreateUserResult
+    login(username: String, password: String): LoginOrError
   }
 `;
 

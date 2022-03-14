@@ -1,15 +1,15 @@
-import { PrismaContext } from "src/context";
-import { ensureAuthenticated } from "../../middleware/authentication";
+import { PrismaContext } from "../../context";
+import Error from "../../middleware/error";
 
 const getUserById = async (
   _parent: any,
   args: { id: number },
   context: PrismaContext
 ) => {
-  const isAuthenticated = ensureAuthenticated("blahblahblah");
+  const isAuthenticated = context.authenticated.isAuth;
 
-  if (!isAuthenticated.isAuth) {
-    return { __typename: "Error", error: isAuthenticated.error };
+  if (!isAuthenticated) {
+    return Error(context.authenticated.error);
   }
 
   const user = await context.user.findUnique({
@@ -24,7 +24,7 @@ const getUserById = async (
   });
 
   if (!user) {
-    return { __typename: "Error", error: "No user found." };
+    return Error("No user found.");
   }
 
   return {

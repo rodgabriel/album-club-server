@@ -1,6 +1,13 @@
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 
+export type JWT_Payload = {
+  id: string;
+  username: string;
+  iat: number;
+  exp: number;
+};
+
 const generateToken = async (
   params: { id: string; username: string },
   expiresIn: string,
@@ -27,12 +34,19 @@ const decodeToken = (
   }
 };
 
-const ensureAuthenticated = (token: string): boolean | any => {
+const ensureAuthenticated = (
+  token: string
+):
+  | { isAuth: true; payload: JWT_Payload }
+  | { isAuth: false; error: string } => {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET as string);
-    return { isAuth: true, payload };
+    return { isAuth: true, payload: payload as JWT_Payload };
   } catch (error) {
-    return { isAuth: false, error: error?.message || "Could not authenticate" };
+    return {
+      isAuth: false,
+      error: error?.message || "Could not verify authentication.",
+    };
   }
 };
 
