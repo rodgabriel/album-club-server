@@ -1,1 +1,7 @@
-export * as user_mutations from "./user";
+import * as userMutations from "./user";
+
+const Mutation = {
+  ...userMutations,
+};
+
+export default Mutation;
